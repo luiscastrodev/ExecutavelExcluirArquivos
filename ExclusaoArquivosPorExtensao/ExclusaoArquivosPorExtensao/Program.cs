@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace ExclusaoArquivosPorExtensao
 {
@@ -17,7 +18,7 @@ namespace ExclusaoArquivosPorExtensao
 
                     while (!extensaoValida)
                     {
-                        Console.WriteLine("informe a Extensão do arquivo ex: mp3(Caso tenha muitos informe separado por virgula mp3, jpg, png)");
+                        Console.WriteLine("informe a Extensão do arquivo ex: .mp3");
 
                         string extensao = Console.ReadLine();
 
@@ -37,7 +38,6 @@ namespace ExclusaoArquivosPorExtensao
 
                             while (!diretorioValido)
                             {
-                                Console.Clear();
 
                                 Console.WriteLine();
                                 Console.WriteLine();
@@ -49,6 +49,7 @@ namespace ExclusaoArquivosPorExtensao
 
                                 string diretorio = Console.ReadLine();
 
+
                                 if (string.IsNullOrEmpty(diretorio))
                                 {
                                     Console.WriteLine("#############################");
@@ -58,7 +59,53 @@ namespace ExclusaoArquivosPorExtensao
                                 }
                                 else
                                 {
-                                    diretorioValido = true;
+                                    Console.WriteLine();
+                                    Console.WriteLine("Prcessando..............");
+                                    Console.WriteLine();
+
+                                    try
+                                    {
+                                        System.IO.DirectoryInfo di = new DirectoryInfo(diretorio);
+
+                                        foreach (FileInfo file in di.GetFiles())
+                                        {
+                                            if(file.Extension.ToLower() == extensao.ToLower())
+                                            {
+                                                file.Delete();
+                                                Console.WriteLine("Pasta " + di.FullName);
+                                                Console.WriteLine(file.Name);
+                                                Console.WriteLine("#############################");
+                                            }
+                                          
+                                        }
+                                        foreach (DirectoryInfo dir in di.GetDirectories())
+                                        {
+                                            foreach (FileInfo fileDir in dir.GetFiles())
+                                            {
+                                                if (fileDir.Extension.ToLower() == extensao.ToLower())
+                                                {
+                                                    fileDir.Delete();
+                                                    Console.WriteLine("Pasta " + di.FullName);
+                                                    Console.WriteLine(fileDir.Name);
+                                                    Console.WriteLine("#############################");
+                                                }
+                                                   
+                                            }
+                                        }
+
+                                        Console.WriteLine("#############################");
+                                        Console.WriteLine("Arquivos excluidos com SUCESSO!!!");
+                                        Console.WriteLine("#############################");
+
+                                        diretorioValido = true;
+                                    }
+                                    catch(Exception e)
+                                    {
+                                        Console.WriteLine("#############################");
+                                        Console.WriteLine("HOUVE UM ERRO !!!" + e.Message);
+                                        Console.WriteLine("#############################");
+                                    }
+                                    
 
                                 }
                             }
@@ -66,10 +113,6 @@ namespace ExclusaoArquivosPorExtensao
 
                         }
                     }
-                }
-                else
-                {
-                    Console.WriteLine("Selecione uma opção Valida! 1 ou 5");
                 }
 
             } while (inputUsuario != 5);
